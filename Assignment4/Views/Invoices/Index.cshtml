@@ -1,0 +1,111 @@
+﻿
+@using Microsoft.AspNetCore.Http;
+@model InvoicesByView
+
+@{
+    ViewBag.Title = "Invoices for " + Model.vendor.VendorName;
+    int sumOfAmount = 0;
+    int invoiceid = 0;
+    int accountNumber = 0;
+    int invoiceSequence = 0;
+    string address = Model.vendor.VendorAddress1 + " " + Model.vendor.VendorAddress1 + " " + Model.vendor.VendorCity;
+
+    string selectedTab = Context.Session.GetString("selectedTab");
+
+    string action = null;
+    if (Context.Session.Keys.Contains("selectedinvoice"))
+    { action = Context.Session.GetString("selectedinvoice"); }
+}
+<div class="tableBorder">
+
+    <br />
+    <div class="row">
+        <h3 class="col-8">@ViewBag.Title</h3>
+        <div class="text-right col-4">
+            <a asp-controller="Vendors" asp-action="@selectedTab">Return to @selectedTab Vendors</a>
+        </div>
+    </div>
+    <br />
+
+    <div class="row lables">
+        <div class="col-6">Address: @address</div>
+        <div class="text-right col-6">Terms: @Model.term days</div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-4">
+
+            <div>Invoices:</div>
+            <br />
+            <!-- list of the invoices as a link -->
+            @foreach (Invoice i in Model.Invoices)
+            {
+                <div class="">
+                    <a class="btn @(action == i.InvoiceNumber ? "active" : "")" asp-controller="Invoices" asp-action="SelectInvoice" asp-route-id="@i.InvoiceId">Invoice @i.InvoiceNumber</a>
+                </div>
+            }
+            <br />
+        </div>
+        <div class="col-sm-6">
+
+            <div>Line items for Invoices:  </div>
+            <br />
+
+            <form asp-controller="Invoices" asp-action="Add" method="post">
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <table class="table tableBorder table-striped">
+                    <thead class="alert-dark">
+                        <tr>
+                            <th class="colBorder">Description</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- getour line items from the viewbag and at the same time save some infos inside the varibales to use for adding to the list -->
+                        @foreach (var lineItem in ViewBag.item)
+                        {
+                            <tr>
+                                <td class="colBorder">@lineItem.LineItemDescription</td>
+                                <td class="colBorder">$@lineItem.LineItemAmount</td>
+                                @{ sumOfAmount += ((int)lineItem.LineItemAmount);
+                                    invoiceid = lineItem.InvoiceId;
+                                    accountNumber = lineItem.AccountNumber;
+                                    invoiceSequence = ++lineItem.InvoiceSequence;
+                                }
+                            </tr>
+                        }
+
+                        <tr>
+                            <td class="colBorder">Total</td>
+                            <td class="colBorder">@sumOfAmount.ToString("c2")</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+                <div class="form-group row ">
+                    <label class="col-sm-3">Description:</label>
+                    <input asp-for="invoiceLineItem.LineItemDescription" class="form-control col-sm-8 formBorder">
+                </div>
+                <div class="form-group row ">
+                    <label class="col-sm-2">Amount:</label>
+                    <input asp-for="invoiceLineItem.LineItemAmount" class="form-control col-sm-3 formBorder">
+                </div>
+                <!-- hidden field for our id: -->
+                <input type="hidden" asp-for="invoiceLineItem.InvoiceId" value="@invoiceid" />
+                <input type="hidden" asp-for="invoiceLineItem.AccountNumber" value="@accountNumber" />
+                <input type="hidden" asp-for="invoiceLineItem.InvoiceSequence" value="@invoiceSequence" />
+
+                <input type="submit" value="Add new line item" class="btn formBorder" />
+            </form>
+
+
+            <br />
+            <br />
+        </div>
+    </div>
+</div>
+
+
+
+

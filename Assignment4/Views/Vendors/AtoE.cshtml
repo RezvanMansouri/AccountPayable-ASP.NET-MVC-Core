@@ -1,0 +1,82 @@
+﻿@using Microsoft.AspNetCore.Http;
+@model List<Vendor>
+@{
+    ViewBag.title = "Vendors List";
+    string address = null;
+
+    string action = null;
+    if (Context.Session.Keys.Contains("selectedTab"))
+    { action = Context.Session.GetString("selectedTab"); }
+
+}
+
+<h3>@ViewBag.title</h3>
+<br />
+<p></p>
+<div>
+    @if (TempData.Keys.Contains("msg"))
+    {
+        <p class="badge-danger p-2 rounded">
+            @TempData["msg"]
+        </p>
+    }
+</div>
+
+<div class="tableBorder">
+    <br>
+    <div>
+        <a asp-controller="Vendor" asp-action="Add">Add a new vendor</a>
+        <br />
+       
+        @{ if (TempData["alertMessage"] != null)
+            {
+                <div class="alert-info">
+                    @TempData["alertMessage"]
+                    <a asp-controller="Vendor" asp-action="Undo" class="">Undo </a>this delete.
+                </div>
+            }
+        }
+    </div>
+    <br>
+
+    <table class="table tableBorder table-striped ">
+        <thead>
+            <tr class="alert-dark">
+                <th class="colBorder">Name</th>
+                <th class="colBorder">Address</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var vendor in Model)
+            {
+                address = vendor.VendorAddress1 + " " + vendor.VendorAddress2 + " " + vendor.VendorCity;
+
+
+                <tr>
+                    <td class="colBorder">@vendor.VendorName</td>
+                    <td class="colBorder">@address</td>
+                    <td>
+                        <a asp-controller="Invoices" asp-action="Index"
+                           asp-route-id="@vendor.VendorId">Invoices</a> |
+
+                        <a asp-controller="Vendor" asp-action="Edit"
+                           asp-route-id="@vendor.VendorId">Edit</a> |
+
+                        <a asp-controller="Vendor" asp-action="Delete"
+                           asp-route-id="@vendor.VendorId">Delete</a>
+
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="alphabeticMenu">
+        <a asp-controller="Vendors" asp-action="AtoE" class="btn formBorder @(action == "AtoE" ? "active" : "")">A - E</a>
+        <a asp-controller="Vendors" asp-action="FtoK" class="btn formBorder @(action == "FtoK" ? "active" : "")">F - K</a>
+        <a asp-controller="Vendors" asp-action="LtoR" class="btn formBorder @(action == "LtoR" ? "active" : "")">L - R</a>
+        <a asp-controller="Vendors" asp-action="StoZ" class="btn formBorder @(action == "StoZ" ? "active" : "")">S - Z</a>
+    </div>
+</div>

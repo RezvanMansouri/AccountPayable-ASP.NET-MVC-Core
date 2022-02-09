@@ -1,0 +1,137 @@
+﻿@using Microsoft.AspNetCore.Http;
+@model Vendor
+
+@{
+    ViewBag.Title = ViewBag.Action + "Vendor";
+    string selectedTab = Context.Session.GetString("selectedTab");
+}
+@section scripts {
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}
+
+<form asp-controller="Vendor" asp-action="@ViewBag.Action" method="post" class="formBorder ">
+
+    <div class="paddingInputs">
+        <h3 class="font-weight-bold">@ViewBag.Title</h3>
+        <br />
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <br />
+        <div class="form-group row ">
+            <div class="col-sm-2"><label>Name:</label></div>
+            <div class="col-sm-4 ">
+                <input asp-for="VendorName" class="form-control formBorder">
+            </div>
+            <div class="col">
+                <span asp-validation-for="VendorName" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-group row ">
+            <div class="col-sm-2"><label>Address1:</label></div>
+            <div class="col-sm-4">
+                <input asp-for="VendorAddress1" class="form-control formBorder">
+            </div>
+            <div class="col">
+                <span asp-validation-for="VendorAddress1" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-group row ">
+            <div class="col-sm-2"><label>Address2:</label></div>
+            <div class="col-sm-4">
+                <input asp-for="VendorAddress2" class="form-control formBorder">
+            </div>
+            <div class="col">
+                <span asp-validation-for="VendorAddress2" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-group row ">
+            <div class="col-sm-2"><label>City:</label></div>
+            <div class="col-sm-4">
+                <input asp-for="VendorCity" class="form-control formBorder">
+            </div>
+            <div class="col">
+                <span asp-validation-for="VendorCity" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-group row ">
+            <div class="col-sm-2"><label>State:</label></div>
+            <div class="col-sm-4">
+                <input asp-for="VendorState" class="form-control formBorder" />
+            </div>
+            <div class="col">
+                <span asp-validation-for="VendorState" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-group row ">
+            <div class="col-sm-2"><label>Zip Code:</label></div>
+            <div class="col-sm-4">
+                <input asp-for="VendorZipCode" class="form-control formBorder" />
+            </div>
+            <div class="col">
+                <span asp-validation-for="VendorZipCode" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-group row ">
+            <div class="col-sm-2"><label>Phone Number:</label></div>
+            <div class="col-sm-4">
+                <input asp-for="VendorPhone" class="form-control formBorder" />
+            </div>
+            <div class="col">
+                <span asp-validation-for="VendorPhone" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-group row ">
+            <div class="col-sm-2"><label>Contact FirstName:</label></div>
+            <div class="col-sm-4">
+                <input asp-for="VendorContactFirstName" class="form-control formBorder" />
+            </div>
+        </div>
+
+        <div class="form-group row ">
+            <div class="col-sm-2"><label>Contact LastName:</label></div>
+            <div class="col-sm-4">
+                <input asp-for="VendorContactLastName" class="form-control formBorder" />
+            </div>
+        </div>
+
+
+        <div class="form-group row ">
+            <div class="col-sm-2"><label>Default terms:</label></div>
+            <div class="col-sm-4">
+                <select asp-for="DefaultTermsId" class="form-control formBorder">
+                    @foreach (Term t in ViewBag.terms)
+                    {
+                        <option value="@t.TermsId">@t.TermsDueDays days</option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group row ">
+            <div class="col-sm-2"><label>Default acct #:</label></div>
+            <div class="col-sm-4">
+                <select asp-for="DefaultAccountNumber" class="form-control formBorder">
+                    @foreach (GeneralLedgerAccount gl in ViewBag.glAccount)
+                    {
+                        <option value="@gl.AccountNumber">@gl.AccountDescription (@gl.AccountNumber)</option>
+                    }
+                </select>
+            </div>
+        </div>
+        
+        <input type="hidden" asp-for="VendorId" />
+        <br />
+        <input type="submit" value="@ViewBag.Action" class="btn formBorder" />
+        <a asp-controller="" asp-action="@selectedTab" class="btn formBorder">Cancel</a>
+    </div>
+
+</form>
